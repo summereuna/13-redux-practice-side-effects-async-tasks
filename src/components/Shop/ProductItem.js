@@ -8,9 +8,8 @@ const ProductItem = (props) => {
 
   const dispatch = useDispatch();
 
-  const addToCartHandler = (event) => {
-    event.preventDefault();
-    //페이로드로 추가할 객체 전달
+  const addToCartHandler = () => {
+    //리덕스 스토어에 페이로드로 추가할 객체 전달
     dispatch(cartActions.addItemToCart({ id, title, price, quantity: 1 }));
   };
 
