@@ -28,7 +28,12 @@ export const fetchCartData = () => {
       //가져올 때는 데이터 변환하지 않고 그대로 가져와도 괜찮음
 
       //replaceCart 리듀서로 프론트엔드 장바구니를 firebase에서 가져온 data로 교체하기
-      dispatch(cartActions.replaceCart(cartData));
+      dispatch(
+        cartActions.replaceCart({
+          items: cartData.items || [], //파이어베이스에서 처음 가져올 때 빈 배열인 경우 에러 안나게 체크
+          totalQuantity: cartData.totalQuantity,
+        })
+      );
     } catch (error) {
       dispatch(
         uiActions.showNotification({
@@ -69,7 +74,11 @@ export const sendCartData = (cart) => {
           //POST는 새 데이터를 데이터 목록에 추가
           //PUT은 새 데이터를 기존 데이터에 오버라이드
           method: "PUT",
-          body: JSON.stringify(cart),
+          body: JSON.stringify({
+            items: cart.items,
+            totalQuantity: cart.totalQuantity,
+            //change 는 보내지 말자
+          }),
         }
       );
 

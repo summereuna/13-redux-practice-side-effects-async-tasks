@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialCartState = {
   items: [],
   totalQuantity: 0, //항목 수량 합
+  changed: false, //장바구니를 교체할 때는 변경 X, 장바구니에 +/- 할 경우에만 변경
 };
 
 const cartSlice = createSlice({
@@ -14,6 +15,8 @@ const cartSlice = createSlice({
       state.items = action.payload.items;
       state.totalQuantity = action.payload.totalQuantity;
     },
+
+    //참고로 add랑 remove는 로컬에서만 실행됨! 단순 렌더링 용
     addItemToCart(state, action) {
       //있는지 없는지 상관없이 일단 카트 총 수량은 무조건 1씩 증가
       state.totalQuantity++;
@@ -24,6 +27,8 @@ const cartSlice = createSlice({
       //이미 존재하는 item인 경우 items 배열의 추가 품목으로 푸쉬하는 대신, 기존 장바구니에 든 해당 item의 quantity수량을 늘리자
       //기존 아이템 배열에서 새로추가할 아이템의 아이디와 같은 아이디를 가진 아이템 찾기
       const existingItem = state.items.find((item) => item.id === newItem.id);
+
+      state.changed = true;
 
       //기존 배열에 존재 하는 아이템이 아닌 경우
       if (!existingItem) {
@@ -53,6 +58,8 @@ const cartSlice = createSlice({
 
       const existingItem = state.items.find((item) => item.id === removeItemId);
 
+      state.changed = true;
+
       if (existingItem.quantity === 1) {
         //카트에 기존 아이템 수량 1이었다면 완전히 삭제
         //filter()로 제거하려는 항목 필터링하여 빼고(!==) 새 배열 반환하기
@@ -62,10 +69,6 @@ const cartSlice = createSlice({
         existingItem.quantity--;
         existingItem.totalPrice = existingItem.totalPrice - existingItem.price;
       }
-    },
-    clearCart(state) {
-      state.items = [];
-      state.totalQuantity = 0;
     },
   },
 });
