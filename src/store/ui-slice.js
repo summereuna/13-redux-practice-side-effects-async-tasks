@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialUiState = {
   isCartVisible: false,
+  notification: null,
 };
 
 const uiSlice = createSlice({
@@ -10,6 +11,14 @@ const uiSlice = createSlice({
   reducers: {
     toggleCart(state) {
       state.isCartVisible = !state.isCartVisible;
+    },
+    showNotification(state, action) {
+      //status에는 보류(pending), 에러(error), 성공(success)
+      state.notification = {
+        status: action.payload.status,
+        title: action.payload.title,
+        message: action.payload.message,
+      };
     },
   },
 });
